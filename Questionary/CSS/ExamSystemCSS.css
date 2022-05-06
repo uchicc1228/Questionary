@@ -1,0 +1,84 @@
+﻿#divQuestion {
+    padding: 30px;
+    height: 40%;
+}
+
+    #divQuestion > h4 {
+        color: #4C6D8E;
+    }
+
+    #divQuestion > h2 {
+        color: #18454C;
+    }
+
+#divOption {
+    padding: 30px;
+    height: 40%;
+}
+
+    #divOption p {
+        font-size: 24px;
+    }
+
+#divBtnArea {
+    height: 20%;
+}
+
+    #divBtnArea > div {
+        width: 50%;
+        height: 100%;
+        margin: auto;
+    }
+
+/*    選單按鈕*/
+#divOption input[type="radio"] {
+    display: none;
+}
+
+#divOption input:checked + .btnOption {
+    background: #0067E2;
+    color: #FFE6D2;
+    cursor: default;
+}
+
+#divOption .btnOption {
+    display: inline-block;
+    margin: 0px 10px;
+    padding: 5px 10px;
+    background: none;
+    border: 0px;
+    color: #18454C;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+    #divOption .btnOption:hover {
+        background: #BDDBF4;
+        color: #385B77;
+    }
+
+#divOption .round {
+    border-radius: 5px;
+}
+/*使選擇等級選項置中*/
+#divChoiseLevel {
+    transform: translate(0px, -50%);
+    text-align:center;
+}
+    #divChoiseLevel > ul {
+        list-style: none;
+        padding:0px;
+    }
+    #divChoiseLevel .btnOption {
+        width: 240px;
+        height: 56px;
+        line-height: 56px;
+        text-align: center;
+        margin: 10px;
+        padding: 0px 10px;
+        background: none;
+        border: 1px solid #18454C;
+        color: #18454C;
+        cursor: pointer;
+        font-size: 28px;
+    }
