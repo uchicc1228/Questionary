@@ -13,7 +13,7 @@ namespace Questionary.Pages.Back
     {
         QuestionayManager _mgr = new QuestionayManager();
         OtherManager _mgrO = new OtherManager();
-        private const int _pageSize = 5;
+        private const int _pageSize = 10;
         protected void Page_Load(object sender, EventArgs e)
         {
 

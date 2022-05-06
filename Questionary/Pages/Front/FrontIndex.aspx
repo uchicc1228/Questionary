@@ -235,7 +235,7 @@
             contentId: "listContent", //關聯列表ID
             pageId: "pagination",  //渲染分頁id
             pageIndex: 1, //第幾頁開始渲染
-            pageSize: 1,//每頁渲染多少條數據<--改這個
+            pageSize: 10,//每頁渲染多少條數據<--改這個
             pageSum: 100,//共多少條數據
             refreshId: null
         };
