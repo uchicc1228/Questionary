@@ -16,6 +16,12 @@ namespace Questionary.Helper
                 Directory.CreateDirectory((@"C:\tmp"));
             if (!File.Exists($@"C:\tmp\helper{title}.csv"))
                 File.Create($@"C:\tmp\helper{title}.csv").Close();
+            if (File.Exists($@"C:\tmp\helper{title}.csv"))
+            {
+                File.Delete($@"C:\tmp\helper{title}.csv");
+                File.Create($@"C:\tmp\helper{title}.csv").Close();
+            }
+                
             filepath = $@"C:\tmp\helper{title}.csv";
             StreamReader streamReader = new StreamReader(filepath); 
             streamReader.Close();

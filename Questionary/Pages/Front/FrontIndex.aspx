@@ -6,7 +6,7 @@
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
-    
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
         crossorigin="“anonymous" />
@@ -51,7 +51,7 @@
             position: relative;
             padding-left: 100px;
             padding-right: 100px;
-            left:10%;
+            left: 10%;
         }
 
         .list-group {
@@ -76,9 +76,9 @@
             left: 0%;
         }
 
-        .pagination{
-            left:35%;
-            position:relative;
+        .pagination {
+            left: 35%;
+            position: relative;
         }
     </style>
 
@@ -122,7 +122,7 @@
                     <li></li>
                 </ul>
             </div>
-            <div id="pagination"  class="divlist">
+            <div id="pagination" class="divlist">
 
                 <ul class="pagination"></ul>
             </div>
@@ -188,6 +188,12 @@
 
             }
 
+            $(window).keydown(function (e) {
+                var key = window.event?e.keyCode : e.which;
+                if (key.toString() == '13') {
+                    return false;
+                }
+            });
 
             //搜尋(標題&日期)
             $(function () {
@@ -220,9 +226,9 @@
                         "Time_End": time_end
                     }
                     url = "../../API/GetQuestionary.ashx";
-                    List.loadList(1, SearchData,url);
+                    List.loadList(1, SearchData, url);
 
-             
+
                 });
             });
 
@@ -245,7 +251,7 @@
         }
         var url = "../../API/GetAllQuestionary.ashx";
         //data.count為總的數據條數，即共多少條數據
-        List.loadList = function (pageIndex, SearchData,url) {
+        List.loadList = function (pageIndex, SearchData, url) {
             var ajaxRequest = function () {
                 $.ajax({
                     url: url,
@@ -330,7 +336,7 @@
                       </tr>
                   `
             }
-          
+
             return content;
         };
         //分頁
@@ -360,7 +366,7 @@
             if ($(this).hasClass('page-prev')) {
                 var cur = activeIndex - 1;
                 if (cur <= 0) cur = 1;//避免超出頁面範圍
-                List.loadList(cur, SearchData,url);
+                List.loadList(cur, SearchData, url);
                 $('.page-next,.page-last').removeClass('disabled');
                 $('.pagination li.page[data-page=' + cur + ']').addClass('active');
                 if (cur == 1) {
@@ -374,7 +380,7 @@
             } else if ($(this).hasClass('page-next')) {
                 var cur = activeIndex + 1;
                 if (cur >= List.pageSum) cur = List.pageSum;//避免超出頁面範圍
-                List.loadList(cur, SearchData,url);
+                List.loadList(cur, SearchData, url);
                 $('.page-prev,.page-first').removeClass('disabled');
                 $('.pagination li.page[data-page=' + cur + ']').addClass('active');
                 if (cur == List.pageSum) {
@@ -387,7 +393,7 @@
 
             } else if ((!$(this).hasClass('page-prev')) && (!$(this).hasClass('page-next'))) {
                 $(this).addClass('active');
-                List.loadList($(this).attr('data-page'), SearchData,url);
+                List.loadList($(this).attr('data-page'), SearchData, url);
             }
             if (!($(this).hasClass('page-first')) && !($(this).hasClass('page-prev')) && !($(this).hasClass('page-last')) && !($(this).hasClass('page-next'))) {
                 if (pageIndex == 1) {
@@ -407,6 +413,8 @@
                 }
             }
         });
+
+
     </script>
 </body>
 </html>
