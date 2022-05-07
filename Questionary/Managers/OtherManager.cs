@@ -236,13 +236,13 @@ namespace Questionary.Managers
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
                 $@" SELECT TOP  {pageSize}  *
-                    FROM UserManager
+                    FROM Person
                      WHERE  UserID not IN 
                           (
                              SELECT TOP {skip} UserID
-                             FROM UserManager     		    
-							 ORDER BY Number DESC)	  		                                                            
-	                   		 ORDER BY Number DESC;";
+                             FROM Person     		    
+							 ORDER BY CreatTime DESC)	  		                                                            
+	                   		 ORDER BY CreatTime DESC;";
 
             try
             {
@@ -256,10 +256,9 @@ namespace Questionary.Managers
                         {
                             UserInfoModel model = new UserInfoModel()
                             {
-                                QID = (Guid)reader["QID"],
-                                Number = (int)reader["Number"],
+                                QID = (Guid)reader["QuestionaryID"],                    
                                 UserName = reader["UserName"] as string,
-                                UserWriteTime = (DateTime)reader["UserWriteTime"],
+                                UserWriteTime = (DateTime)reader["CreatTime"],
                                 UserID = (Guid)reader["UserID"],
 
                             };
@@ -287,7 +286,7 @@ namespace Questionary.Managers
 
 
         //內頁專用 列出有多少使用者那個頁籤
-        public List<UserInfoModel> GetMapList(int pageSize, int pageIndex, Guid QuestionID)
+        public List<UserInfoModel> GetMapList(int pageSize, int pageIndex, Guid QuestionaryID)
         {
             List<UserInfoModel> list = new List<UserInfoModel>();
             int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
@@ -297,15 +296,15 @@ namespace Questionary.Managers
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
                 $@" SELECT TOP  {pageSize}  *
-                    FROM UserManager
+                     FROM Person
                      WHERE  UserID not IN 
                           (
                              SELECT TOP {skip} UserID
-                             FROM UserManager  
-                             where QID = @QuestionID
-							 ORDER BY Number DESC)	
-                             and  QID = @QuestionID
-	                   		 ORDER BY Number DESC;";
+                             FROM Person  
+                             where QuestionaryID = @QuestionaryID
+							 ORDER BY CreatTime DESC)	
+                             and  QuestionaryID = @QuestionaryID
+	                   		 ORDER BY CreatTime DESC;";
 
             try
             {
@@ -314,18 +313,17 @@ namespace Questionary.Managers
                     using (SqlCommand command = new SqlCommand(commandText, conn))
                     {
 
-                        command.Parameters.AddWithValue("@QuestionID", QuestionID);
+                        command.Parameters.AddWithValue("@QuestionaryID", QuestionaryID);
                         conn.Open();
                         SqlDataReader reader = command.ExecuteReader();
                         while (reader.Read())
                         {
                             UserInfoModel model = new UserInfoModel()
                             {
-                                QID = (Guid)reader["QID"],
-                                Number = (int)reader["Number"],
-                                UserName = reader["UserName"] as string,
-                                UserWriteTime = (DateTime)reader["UserWriteTime"],
+                                QID = (Guid)reader["QuestionaryID"],
+                                UserWriteTime = (DateTime)reader["CreatTime"],
                                 UserID = (Guid)reader["UserID"],
+                                UserName = reader["UserName"] as string
 
                             };
                             model.UserWriteTime_string = model.UserWriteTime.ToString("yyyy-MM-dd");
@@ -377,7 +375,8 @@ namespace Questionary.Managers
                             ORDER BY QNumber DESC
                         )  
                             and [QStartTime] >= @QStartTime
-                                and [QEndTime] <=  @QEndTime
+                            and [QEndTime] <=  @QEndTime
+                            and QDisplay = '1' 
                         {whereCondition}
                     ORDER BY QNumber DESC ";
 
@@ -452,7 +451,7 @@ namespace Questionary.Managers
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
                 $@" SELECT distinct USERID
-                    FROM UserManager
+                    FROM Person
                     ";
             try
             {
@@ -560,8 +559,13 @@ namespace Questionary.Managers
                         (QID, QuestionID, UserID,  UserName ,UserPhone, UserEmail, UserAge , UserTextAnswer,Number)
                     VALUES
                         (@QID, @QuestionID, @UserID,  @UserName, @UserPhone , @UserEmail, @UserAge , @UserTextAnswer,@Number);"
+                                            +
 
-
+                @" 
+                    INSERT INTO Person
+                        (QuestionaryID, UserID,UserName)
+                    VALUES
+                        (@QID,@UserID,@UserName);"
 
                                             +
 

@@ -229,17 +229,14 @@ namespace Questionary.Managers
                                 if (DateTime.Parse(model.EndTime_string) < DateTime.Now)
                                 {
                                     model.Status = "已完結";
-                                    model.QuestionaryUrl = "";
+;
                                 }
                             }
                             if (string.IsNullOrEmpty(model.EndTime_string))
                             {
                                 model.EndTime_string = "-";
                             }
-                            if(model.Status == "關閉")
-                            {
-                                model.QuestionaryUrl = "";
-                            }
+
 
                             list.Add(model);
 
@@ -302,7 +299,7 @@ namespace Questionary.Managers
                                 if (DateTime.Parse(model.EndTime_string) < DateTime.Now)
                                 {
                                     model.Status = "已完結";
-                                    model.QuestionaryUrl = "";
+
                                 }
                             }
                             if (string.IsNullOrEmpty(model.EndTime_string))

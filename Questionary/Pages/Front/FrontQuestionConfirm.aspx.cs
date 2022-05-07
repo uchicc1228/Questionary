@@ -27,9 +27,9 @@ namespace Questionary.Pages.Front
         private static List<UserInfoModel> _useranswer;
         private static Guid _QID;
         #region "動態生成控制項所需變數"
-        static int rdoi;
-        static int chki;
-        static int txti;
+         int rdoi;
+         int chki;
+         int txti;
         static string rdoans;
         static string chkans;
         static string txtans;
@@ -39,7 +39,7 @@ namespace Questionary.Pages.Front
 
             if (!IsPostBack)
             {
-           
+         
                 _QID = Guid.Parse(Request.QueryString["ID"]);
                 _userinfo = HttpContext.Current.Session["userInfo"] as UserInfoModel;
                 if(_userinfo == null)
@@ -190,12 +190,12 @@ namespace Questionary.Pages.Front
                 //所有的answer
                 QuestionModel answer = _mgrQ.GetQuestionAns(anss.QuestionID);
                 string[] qanswer = answer.Answer.Split(';'); //內容: 回答一 回答二 回答三
-                if (rdoans != null)
+                if (string.IsNullOrEmpty(rdoans) != true)
                 {
                     rdoansarray = rdoans.Split(' ');// 內容: 台北 回答三
                    
                 }
-                if (chkans != null)
+                if (string.IsNullOrEmpty(chkans) != true)
                 {
                     chkansarray = chkans.Split(' ');
                 }
@@ -210,18 +210,22 @@ namespace Questionary.Pages.Front
                             continue;
                         }
                     }
-                    for (int i = 0; i < rdoansarray.Length - 1; i++)
+                    if(rdoansarray != null)
                     {
-                        rdoansarray = rdoansarray.Where(x => x != "").ToArray();
-                        anss.Number = answer.QNumber;
-                        qq = tmplist.Find(x => x.Contains(rdoansarray[i]));
-                        anss.UserTextAnswer = qq + ";";
-                        _mgrO.ConfirmAnswer(anss);
-                        rdoans = rdoans.Replace(qq, "");
-                        rdoansarray = rdoansarray.Where(x => x != "").ToArray();
-                        break;
+                        for (int i = 0; i < rdoansarray.Length - 1; i++)
+                        {
+                            rdoansarray = rdoansarray.Where(x => x != "").ToArray();
+                            anss.Number = answer.QNumber;
+                            qq = tmplist.Find(x => x.Contains(rdoansarray[i]));
+                            anss.UserTextAnswer = qq + ";";
+                            _mgrO.ConfirmAnswer(anss);
+                            rdoans = rdoans.Replace(qq, "");
+                            rdoansarray = rdoansarray.Where(x => x != "").ToArray();
+                            break;
 
+                        }
                     }
+                   
                 }
                 if (item.UserAnswer.Contains("chk"))
                 {
@@ -233,15 +237,18 @@ namespace Questionary.Pages.Front
                         }
                     }
 
-                    for (int i = 0; i < chkansarray.Length - 1; i++)
+                    if(chkansarray != null)
                     {
-                        qq = tmplist.Find(x => x.Contains(chkansarray[i]));
-                        if(qq != null &&!_tmptext.Contains(qq) )
+                        for (int i = 0; i < chkansarray.Length - 1; i++)
                         {
-                            _tmptext += qq + ";";
+                            qq = tmplist.Find(x => x.Contains(chkansarray[i]));
+                            if (qq != null && !_tmptext.Contains(qq))
+                            {
+                                _tmptext += qq + ";";
+                            }
+
                         }
-                        
-                    }
+                    }   
                     anss.UserTextAnswer = _tmptext;
                     anss.Number = answer.QNumber;
                     _mgrO.ConfirmAnswer(anss);
@@ -304,8 +311,8 @@ namespace Questionary.Pages.Front
 
         protected void btncancel_Click(object sender, EventArgs e)
         {
-            string url = "FrontQuestionaryQ.aspx?ID=" + _QID;
-            Response.Redirect("url");
+
+            Response.Redirect("FrontQuestionaryQ.aspx?ID=" + _QID);
 
         }
     }

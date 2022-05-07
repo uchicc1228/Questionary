@@ -37,8 +37,8 @@
             text-align: left;
             padding: 0px;
             margin: 0px;
-            left:10%;
-            float:left;
+            left: 10%;
+            float: left;
         }
 
         label {
@@ -80,9 +80,13 @@
                 border-top: 0.5px solid black;
             }
 
-        #left{
-            float:left;
+        #left {
+            float: left;
         }
+        #lblContent{
+           padding:3px;
+        }
+
     </style>
 </head>
 <body>
@@ -122,15 +126,15 @@
                     <asp:View ID="ViewAddQuestionary" runat="server">
                         <uc1:LeftControls runat="server" ID="LeftControls2" Visible="true" />
                         <asp:Literal runat="server" ID="ltlmeess"></asp:Literal><br />
-                        <label>問卷名稱</label>
+                        <label><b>問卷名稱</b></label>
                         <asp:TextBox runat="server" ID="TextQuestionaryTitle"></asp:TextBox><br />
-                        <label style="float: left; padding-right: 15px;">描述內容</label>
-                        <asp:TextBox runat="server" ID="TextQuestionaryContent" Style="width: 250px;" TextMode="MultiLine" Rows="3" MaxLength="25"></asp:TextBox><br />
-                        <label>開始時間</label>
+                        <label style="float: left; padding-right: 15px;"><b>描述內容</b></label>
+                        <asp:TextBox runat="server" ID="TextQuestionaryContent" Style="width: 250px;" TextMode="MultiLine" Rows="3" MaxLength="200"></asp:TextBox><br />
+                        <label><b>開始時間</b></label>
                         <asp:TextBox runat="server" ID="TextQuestionaryStartTime" TextMode="Date"></asp:TextBox><br />
-                        <label>結束時間</label>
+                        <label><b>結束時間</b></label>
                         <asp:TextBox runat="server" ID="TextQuestionaryEndTime" TextMode="Date"></asp:TextBox><br />
-                        <label>啟用</label>
+                        <label><b>啟用</b></label>
                         <asp:CheckBox runat="server" ID="ChkisEnable" Checked="true" value="0" />
                         <asp:Button runat="server" ID="Add" OnClick="Add_Click" Text="新增" CssClass="allbutton" />
                         <asp:Button runat="server" OnClick="Empty_Click" ID="Empty" Text="重填" CssClass="allbutton" Style="padding-left: 10px;" /><br />
@@ -138,26 +142,26 @@
                     </asp:View>
                     <asp:View ID="ViewEditQuestion" runat="server">
                         <div>
-                            <label>問卷名稱</label>
+                            <label><b>問卷名稱</b></label>
                             <asp:Label runat="server" ID="lblTitle"></asp:Label>
                             <br />
 
 
-                            <label>描述內容</label>
-                            <asp:Label runat="server" ID="lblContent"></asp:Label><br />
+                            <label><b>描述內容</b></label>
+                            <asp:Label runat="server" ID="lblContent"></asp:Label> <br />
 
-                            <label>開始時間</label>
+                            <label><b>開始時間</b></label>
                             <asp:Label runat="server" ID="lblStartTime"></asp:Label><br />
 
-                            <label>結束時間</label>
+                            <label><b>結束時間</b></label>
                             <asp:Label runat="server" ID="lblEndTime"></asp:Label><br />
 
-                            <label>種類</label>
+                            <label><b>種類</b></label>
                             <asp:DropDownList runat="server" ID="dowList" AutoPostBack="true" OnSelectedIndexChanged="dowList_SelectedIndexChanged">
                             </asp:DropDownList><br />
 
 
-                            <label>問題</label>
+                            <label><b>問題</b></label>
                             <asp:TextBox runat="server" ID="txtQuestion" placeholder="輸入問題" OnTextChanged="txtQuestion_TextChanged" AutoPostBack="true"></asp:TextBox>
 
 
@@ -168,11 +172,11 @@
                             </asp:DropDownList><br />
 
 
-                            <label>回答</label>
+                            <label><b>回答</b></label>
                             <asp:TextBox runat="server" ID="txtanswer" placeholder="輸入回答 多個回答請以;分隔" OnTextChanged="txtanswer_TextChanged" AutoPostBack="true"></asp:TextBox><br />
 
 
-                            <label>是否必填</label>
+                            <label><b>是否必填</b></label>
                             <asp:CheckBox runat="server" ID="checknecessary" OnCheckedChanged="checknecessary_CheckedChanged" />
                             <asp:Button runat="server" ID="btnconfirmQ" Text="加入問題" OnClick="btnconfirmQ_Click" CssClass="allbutton" /><br />
 
@@ -180,15 +184,15 @@
                             <asp:Literal runat="server" ID="lglmsg2"> **若編輯完畢請按送出</asp:Literal>
                             <br />
                             <asp:Button runat="server" ID="btnFinalConfirm" Text="確認編輯" OnClick="btnFinalConfirm_Click" CssClass="formbutton" />
-                            <asp:Button runat="server" ID="btnFinalCancek" Text="取消" OnClick="btnFinalCancek_Click" CssClass="formbutton" />    
+                            <asp:Button runat="server" ID="btnFinalCancek" Text="取消" OnClick="btnFinalCancek_Click" CssClass="formbutton" />
                             <div class="multi2">
                                 <asp:Repeater runat="server" ID="ret1" OnItemCommand="ret1_ItemCommand">
                                     <ItemTemplate>
                                         <tr>
 
                                             <td>
-                                               <asp:CheckBox runat="server" ID="CheckBox3" />
-                            <asp:HiddenField runat="server" ID="HiddenField1" Value='<%#Eval("QuestionID")%>' />
+                                                <asp:CheckBox runat="server" ID="CheckBox3" />
+                                                <asp:HiddenField runat="server" ID="HiddenField1" Value='<%#Eval("QuestionID")%>' />
                                             </td>
 
                                             <td>
@@ -218,10 +222,11 @@
                                     </HeaderTemplate>
                                     <FooterTemplate>
                                         </table>
+                                   
                                     </FooterTemplate>
                                 </asp:Repeater>
 
-                                <asp:Button runat="server" ID="btnDel" text="批量刪除" OnClick="btnDel_Click"/>
+                                <asp:Button runat="server" ID="btnDel" Text="批量刪除" OnClick="btnDel_Click" />
                             </div>
                         </div>
                     </asp:View>
@@ -249,14 +254,15 @@
                                     </HeaderTemplate>
                                     <FooterTemplate>
                                         </table>
+                                   
                                     </FooterTemplate>
                                 </asp:Repeater>
                             </div>
                         </asp:PlaceHolder>
                         <asp:PlaceHolder runat="server" ID="plcone" Visible="false">
                             <asp:Button runat="server" ID="getoutone" Text="匯出" />
-                            <asp:Literal runat="server" ID="oneforLiteral" ></asp:Literal>
-                             <asp:Literal runat="server" ID="ltlPlcMsg"></asp:Literal>
+                            <asp:Literal runat="server" ID="oneforLiteral"></asp:Literal>
+                            <asp:Literal runat="server" ID="ltlPlcMsg"></asp:Literal>
                             <label>姓名</label>
                             <asp:TextBox runat="server" Enabled="false" ID="txt_plconeUserName"></asp:TextBox>
                             <br />
@@ -281,7 +287,7 @@
             </div>
         </div>
 
-   
+
     </form>
 </body>
 <script>

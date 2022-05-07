@@ -77,6 +77,7 @@
     <Content Include="JavaScript\bootstrap\bootstrap.min.js" />
     <Content Include="JavaScript\jquery\jquery.js" />
     <Content Include="JavaScript\jquery\jquery.min.js" />
+    <Content Include="NoPage.aspx" />
     <Content Include="Pages\Back\AddQuestionaryMultiView.aspx" />
     <Content Include="Pages\Back\BackIndexReWrite.aspx" />
     <Content Include="Pages\Back\BaseQuestion.aspx" />
@@ -123,6 +124,13 @@
     <Compile Include="Models\QuestionModel.cs" />
     <Compile Include="Models\StatciModel.cs" />
     <Compile Include="Models\UserInfoModel.cs" />
+    <Compile Include="NoPage.aspx.cs">
+      <DependentUpon>NoPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="NoPage.aspx.designer.cs">
+      <DependentUpon>NoPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Back\AddQuestionaryMultiView.aspx.cs">
       <DependentUpon>AddQuestionaryMultiView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

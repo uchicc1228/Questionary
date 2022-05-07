@@ -42,6 +42,19 @@ namespace Questionary.Pages.Back
             _modelQ.QuestionID = Guid.NewGuid();
             _modelQ.Question = this.txtQuestion.Text;
             _modelQ.Answer = this.txtanswer.Text;
+
+
+            List<string> checkans = this.txtanswer.Text.Split(';').ToList();
+            bool isRequest = checkans.GroupBy(i => i).Where(g => g.Count() > 1).Count() > 0;
+            if (isRequest == true)
+            {
+                Response.Write("<script>alert('有重複的答案')</script>");
+                return;
+            }
+
+
+
+
             if (string.IsNullOrEmpty(this.txtQuestion.Text) != true)
             {
                 _modelQ.Question = this.txtQuestion.Text;

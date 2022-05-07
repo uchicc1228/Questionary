@@ -29,7 +29,7 @@ namespace Questionary.Pages.Back
         UserInfoManager _mgrU = new UserInfoManager();
         OtherManager _mgrO = new OtherManager();
         static Guid _questionayGuid;
-        private const int _pageSize = 5;
+        private const int _pageSize = 10;
         static List<UserInfoModel> num;
         #region "動態生成控制項所需變數"
         static int _qrdoi = 0;
@@ -50,8 +50,11 @@ namespace Questionary.Pages.Back
         /// </summary>      
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            _questionayGuid = Guid.Parse(Request.QueryString["ID"]);
+            if(Request.QueryString["ID"] != null)
+            {
+                _questionayGuid = Guid.Parse(Request.QueryString["ID"]);
+            }
+         
             num = _mgrU.GetAllWriter(_questionayGuid);
             if (num.Count > 0)
             {
@@ -143,11 +146,21 @@ namespace Questionary.Pages.Back
 
                         var listwee = this._mgrO.GetMapList(_pageSize, pageIndex);
 
+                        if (listwee.Count == 0)
+                        {
+                            ucPager.Visible = false;
+                        }
+
+
                         this.ucPager._urlID = _questionayGuid.ToString();
                         List<UserInfoModel> totalRows = _mgrO.tottalrows();
                         this.ucPager.TotalRows = totalRows.Count();
                         this.ucPager.PageIndex = pageIndex;
                         this.ucPager.Bind();
+                        if (totalRows.Count < 10)
+                        {
+                            ucPager.Visible = false;
+                        }
                         this.repeaterGetout.DataSource = listwee;
                         this.repeaterGetout.DataBind();
 
@@ -204,11 +217,21 @@ namespace Questionary.Pages.Back
 
                         var listwee = this._mgrO.GetMapList(_pageSize, pageIndex);
 
+                        if(listwee.Count == 0)
+                        {
+                            ucPager.Visible = false;
+                        }
+
+
                         this.ucPager._urlID = _questionayGuid.ToString();
                         List<UserInfoModel> totalRows = _mgrO.tottalrows();
                         this.ucPager.TotalRows = totalRows.Count();
                         this.ucPager.PageIndex = pageIndex;
                         this.ucPager.Bind();
+                        if (totalRows.Count < 10)
+                        {
+                            ucPager.Visible = false;
+                        }
                         this.repeaterGetout.DataSource = listwee;
                         this.repeaterGetout.DataBind();
 
@@ -216,7 +239,9 @@ namespace Questionary.Pages.Back
                     for (int i = 0; i < _ddlList.Count; i++)
                     {
                         _item = _ddlList.ElementAt(i);
+
                         this.dowList.Items.Add(new ListItem() { Text = _item.Question, Value = _item.QuestionID.ToString() });
+
                     }
                 }
 
@@ -312,12 +337,11 @@ namespace Questionary.Pages.Back
 
                 var listwee = this._mgrO.GetMapList(_pageSize, pageIndex, _questionayGuid);
 
-                if (listwee.Count == 0)
+                if (listwee.Count == 0 )
                 {
                     Response.Write("<script>alert('尚無資料')</script>");
+                    ucPager.Visible = false;
                 }
-
-
 
 
 
@@ -326,6 +350,10 @@ namespace Questionary.Pages.Back
                 this.ucPager.TotalRows = totalRows.Count();
                 this.ucPager.PageIndex = pageIndex;
                 this.ucPager.Bind();
+                if(totalRows.Count < 10)
+                {
+                    ucPager.Visible = false;
+                }
                 this.repeaterGetout.DataSource = listwee;
                 this.repeaterGetout.DataBind();
             }
@@ -650,12 +678,22 @@ namespace Questionary.Pages.Back
 
             // 先找有沒有相同名稱的題目
             List<QuestionModel> _tmpModel = _mgrQ.GetAllQuestion(_questionayGuid);
-            List<QuestionModel> _listq = _tmpModel.FindAll(x => x.Question.Contains(this.txtQuestion.Text));
+            List<QuestionModel> _listq = _tmpModel.FindAll(x => x.Question == this.txtQuestion.Text);
             if (_listq.Count > 0)
             {
                 Response.Write("<script>alert('已有相同題目')</script>");
                 return;
             }
+
+            List<string> checkans = this.txtanswer.Text.Split(';').ToList();
+            bool isRequest = checkans.GroupBy( i  => i).Where(g => g.Count() >1 ).Count() >0;
+            if(isRequest == true)
+            {
+                Response.Write("<script>alert('有重複的答案')</script>");
+                return;
+            }
+
+        //http://localhost:14351/Pages/Back/BackIndexReWrite.aspx
 
 
             _modelQ.QID = _questionayGuid;
@@ -753,12 +791,14 @@ namespace Questionary.Pages.Back
             switch (e.CommandName)
             {
                 case "btnEdit":
-                    if (dowList.SelectedIndex != 0)
+
+                    num = _mgrU.GetAllWriter(_questionayGuid);
+
+                    if (this.Session["PageMode"] as string == "編輯" && num.Count > 0)
                     {
-                        dowList.SelectedItem.Text = "常用問題";
+                        Response.Write("<script>alert('該問卷已有填寫者，故無法變更問卷內容。')</script>");
+                        return;
                     }
-
-
                     QuestionModel model2 = new QuestionModel();
                     string[] arr = e.CommandArgument.ToString().Split(',');
                     Guid id;
@@ -832,6 +872,13 @@ namespace Questionary.Pages.Back
                     model3.QID = id1;
                     model3.QuestionID = qid;
                     model3.QDisplay = -1;
+                    num = _mgrU.GetAllWriter(_questionayGuid);
+
+                    if (this.Session["PageMode"] as string == "編輯" && num.Count > 0)
+                    {
+                        Response.Write("<script>alert('該問卷已有填寫者，故無法變更問卷內容。')</script>");
+                        return;
+                    }
                     if (_mgrQ.DeleteQuestion(model3) == true)
                     {
                         Response.Write("<script>alert('刪除成功')</script>");
@@ -973,19 +1020,35 @@ namespace Questionary.Pages.Back
 
                 this.txtQuestion.Text = _modelQ.Question;
                 this.txtanswer.Text = _modelQ.Answer;
+                //單複選
                 if (_modelQ.QQMode == "單選")
                 {
                     this.dowMode.SelectedIndex = 0;
+                    this.txtanswer.Enabled = false;
                 }
                 else if (_modelQ.QQMode == "複選")
                 {
                     this.dowMode.SelectedIndex = 1;
+                    this.txtanswer.Enabled = false;
                 }
                 else
                 {
                     this.dowMode.SelectedIndex = 2;
                     this.txtanswer.Enabled = false;
                 }
+
+                if(_modelQ.QIsNecessary == "必填")
+                {
+                    this.checknecessary.Checked = true;
+                }
+                else
+                {
+                    this.checknecessary.Checked = false;
+                }
+
+
+
+
 
             }
 
@@ -1203,10 +1266,9 @@ namespace Questionary.Pages.Back
             {
                 for (var i = 0; i < questionary.Count; i++)
                 {
-                    if (item2.Question != questionary[i].Question)
+                    if (item2.Question == questionary[i].Question)
                     {
                         _statci.Add(item2);
-
                     }
                 }
             }
@@ -1284,6 +1346,18 @@ namespace Questionary.Pages.Back
 
         protected void btnDel_Click(object sender, EventArgs e)
         {
+
+            num = _mgrU.GetAllWriter(_questionayGuid);
+
+            if (this.Session["PageMode"] as string == "編輯" && num.Count > 0)
+            {
+                Response.Write("<script>alert('該問卷已有填寫者，故無法變更問卷內容。')</script>");
+                return;
+            }
+
+
+
+
             CheckBox checkbox = new CheckBox();                 //創建對象
             HiddenField id;                                     //創建對象
             for (int i = 0; i < ret1.Items.Count; i++)

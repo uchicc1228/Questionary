@@ -143,7 +143,7 @@
                     }
                 }
                 for (k = 0; k < txtListCount; k++) {
-                    var wee1 = document.getElementById(`A3txt${k}`).value
+                    var wee1 =  $(`div[id='txtrequired${k}'] > input[type="text"]`).val();
                     if (wee1 == "") {
                         alert('請注意文字項目');
                         return false;

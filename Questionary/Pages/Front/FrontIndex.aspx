@@ -254,7 +254,7 @@
                     data: SearchData,
                     success: function (data) {
                         if (data.length == 0) {
-                            alert('無欲查詢資料');
+                            alert('無欲查詢資料，因此問卷列表無任何變更。');
 
                         }
                         else {

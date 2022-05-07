@@ -19,7 +19,7 @@ namespace Questionary.API
             if (string.Compare("GET", context.Request.HttpMethod, true) == 0 && !string.IsNullOrEmpty(context.Request.QueryString["ALL"]))
             {
                 var list = _mgr.GetALLQuestionay();
-                var listTop10 = list.Take(10).ToList();
+                var listTop10 = list.ToList();
                 string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(listTop10);
                 context.Response.ContentType = "application/json";
                 context.Response.Write(jsonText);

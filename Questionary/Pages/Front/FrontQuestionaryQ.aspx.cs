@@ -23,9 +23,9 @@ namespace Questionary.Pages.Front
          int _chki;
          int _txti;
         static bool required;
-        int _requiredrdo = 0;
-        int _requiredchk = 0;
-        int _requiredtxt = 0;
+         int _requiredrdo = 0;
+         int _requiredchk = 0;
+         int _requiredtxt = 0;
         int groupname = 0;
         #endregion
         protected void Page_Load(object sender, EventArgs e)
@@ -58,6 +58,7 @@ namespace Questionary.Pages.Front
                                     CssClass = "required"
                                 };
                                 this.plcQuestion.Controls.Add(plcrequired);
+                               
                                 required = true;
                             }
 
@@ -65,7 +66,11 @@ namespace Questionary.Pages.Front
                             {
                                 buildRdo(itemRdo, required, $"rdorequired{_requiredrdo}", groupname, item.ANumber);
                             }
-                            _requiredrdo++;
+                            if (item.QIsNecessary == "必填")
+                            {
+                                _requiredrdo++;
+                            }
+
                             groupname++;
                             break;
 
@@ -83,6 +88,7 @@ namespace Questionary.Pages.Front
                                     CssClass = "required"
                                 };
                                 this.plcQuestion.Controls.Add(plcrequired);
+                               
                                 required = true;
                             }
 
@@ -90,8 +96,13 @@ namespace Questionary.Pages.Front
                             foreach (var itemRdo in arrayrdo)
                             {
                                 buildChk(itemRdo, required, $"chkrequired{_requiredchk}", item.ANumber);
+                               
                             }
-                            _requiredchk++;
+                            if (item.QIsNecessary == "必填")
+                            {
+                                _requiredchk++;
+                            }
+
                             break;
 
 
@@ -110,7 +121,8 @@ namespace Questionary.Pages.Front
                                     CssClass = "required"
                                 };
                                 this.plcQuestion.Controls.Add(plcrequired);
-                                required = true;
+                               
+                                 required = true;
                             }
 
 
@@ -118,7 +130,7 @@ namespace Questionary.Pages.Front
                             {
                                 buildTxt(itemRdo, required, $"txtrequired{_requiredtxt}", item.ANumber);
                             }
-                            _requiredtxt++;
+                           
                             break;
 
 
@@ -148,7 +160,7 @@ namespace Questionary.Pages.Front
             else
             {
                 FindControl(plcid).Controls.Add(txtBtn);
-
+                _requiredtxt++;
             }
             _txti++;
 
@@ -192,6 +204,7 @@ namespace Questionary.Pages.Front
             else
             {
                 FindControl(plcid).Controls.Add(rdoBtn);
+            
             }
             _rdoi++;
         }

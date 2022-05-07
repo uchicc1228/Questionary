@@ -15,7 +15,7 @@ namespace Questionary.ShareControls
         public int PageIndex { get; set; } = 1;
 
         /// <summary> 一頁幾筆 </summary>
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = 10;
 
         /// <summary> 共幾筆 </summary>
         public int TotalRows { get; set; } = 0;

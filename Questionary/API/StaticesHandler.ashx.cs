@@ -31,17 +31,19 @@ namespace Questionary.API
             questionary = _mgrQ.GetAllQuestion(questionaryid);
             questionary = questionary.FindAll(x => x.QQMode != "文字");
 
+
             //抓Table = Answer內所有的問題
             List<StatciModel> statci = _mgrO.FindStaticInfo(questionaryid);
             List<StatciModel> _statci = new List<StatciModel>();
+        
+            
             foreach (var item2 in statci)
             {
                 for (var i = 0; i < questionary.Count; i++)
                 {
-                    if (item2.Question != questionary[i].Question)
+                    if (item2.Question == questionary[i].Question)
                     {
-                        _statci.Add(item2);
-
+                      _statci.Add(item2);
                     }
                 }
             }
