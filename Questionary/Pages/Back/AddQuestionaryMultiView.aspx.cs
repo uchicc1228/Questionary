@@ -1074,7 +1074,9 @@ namespace Questionary.Pages.Back
             switch (e.CommandName)
             {
                 case "btnUserID":
-                    this.getout.Visible = false;
+
+        
+                    this.getout.Enabled = false;
                     this.ucPager.Visible = false;
                     this.plcall.Visible = false;
                     this.plcone.Visible = true;

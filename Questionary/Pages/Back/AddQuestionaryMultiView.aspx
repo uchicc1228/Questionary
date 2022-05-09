@@ -260,7 +260,7 @@
                             </div>
                         </asp:PlaceHolder>
                         <asp:PlaceHolder runat="server" ID="plcone" Visible="false">
-                            <asp:Button runat="server" ID="getoutone" Text="匯出" />
+                  
                             <asp:Literal runat="server" ID="oneforLiteral"></asp:Literal>
                             <asp:Literal runat="server" ID="ltlPlcMsg"></asp:Literal>
                             <label>姓名</label>
