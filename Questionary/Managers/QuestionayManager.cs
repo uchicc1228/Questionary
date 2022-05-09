@@ -185,18 +185,27 @@ namespace Questionary.Managers
         {
             List<QuestionaryModel> list = new List<QuestionaryModel>();
             string whereCondition = string.Empty;
+            string whereCondition2 = string.Empty;
             if (time_end != "")
             {
-                whereCondition = "and [QEndTime] <=   @QEndTime ";
+                whereCondition = "and [QEndTime] <=   @QEndTime and [QEndTime] != ''  ";
             }
+   
+
+            if (string.IsNullOrEmpty(time_end) == true)
+            {
+                whereCondition2 = "or [QEndTime] ='' and QDisplay = '1' ";
+            }
+
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
                $@"select * from Questionary where QTitle like  '%' + @title + '%' and 
                     [QStartTime] >= @QStartTime
                     {whereCondition}
-                    and [QDisplay] = 1  
+                    and [QDisplay] = 1  {whereCondition2} 
                     ORDER BY [QNumber] DESC";
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -257,17 +266,29 @@ namespace Questionary.Managers
         //用日期列出搜尋結果
         public List<QuestionaryModel> GetQuestionaryWithTime(string time_start, string time_end)
         {
-
+            string whereCondition = "";
+            string whereCondition2 = "";
             List<QuestionaryModel> list = new List<QuestionaryModel>();
+
+            if (time_end != "")
+            {
+                whereCondition = "and [QEndTime] <=   @QEndTime  and [QEndTime] != '' ";
+            }
+
+            if(string.IsNullOrEmpty(time_end)== true)
+            {
+                whereCondition2 = "or [QEndTime] =''";
+            }
+
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
-               @"SELECT *
+               $@"SELECT *
                     From Questionary
                     where [QStartTime] >= @QStartTime
-                    and [QEndTime] <=   @QEndTime 
-                    and QDisplay = 1 
-                    ORDER BY [QNumber] DESC";
+                    {whereCondition}
+                    and QDisplay = 1  {whereCondition2}
+                    ORDER BY [QNumber] DESC;";
 
             try
             {
@@ -306,6 +327,8 @@ namespace Questionary.Managers
                             {
                                 model.EndTime_string = "-";
                             }
+
+
                             list.Add(model);
 
                         }
@@ -329,7 +352,7 @@ namespace Questionary.Managers
             string commandText =
                  @" SELECT *
                     FROM Questionary
-                    WHERE QTitle = @QTitle";
+                    WHERE QTitle = @QTitle　and QDisplay = 1 ";
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
@@ -566,6 +589,7 @@ namespace Questionary.Managers
 
         public bool CreateQuestionary(QuestionaryModel model)
         {
+
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =

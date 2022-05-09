@@ -94,7 +94,7 @@
         </div>
         <div id="qq">
             <a href="BackIndexReWrite.aspx">問卷管理</a><br />
-            <a href="BaseQuestion.aspx">後台問卷管理</a>
+            <a href="BaseQuestion.aspx">常用問題管理</a>
         </div>
         <div id="divlist">
             <asp:Repeater runat="server" ID="rptList">

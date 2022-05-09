@@ -1024,12 +1024,12 @@ namespace Questionary.Pages.Back
                 if (_modelQ.QQMode == "單選")
                 {
                     this.dowMode.SelectedIndex = 0;
-                    this.txtanswer.Enabled = false;
+
                 }
                 else if (_modelQ.QQMode == "複選")
                 {
                     this.dowMode.SelectedIndex = 1;
-                    this.txtanswer.Enabled = false;
+
                 }
                 else
                 {

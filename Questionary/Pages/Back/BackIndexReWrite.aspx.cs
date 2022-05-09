@@ -55,7 +55,7 @@ namespace Questionary.Pages.Back
                     }
 
                     this.txtCalender_start.Text = "2022-01-01";
-                    this.txtCalender_end.Text = "2022-12-31";
+
                     return;
                 }
 
@@ -63,7 +63,7 @@ namespace Questionary.Pages.Back
 
                 
                 this.txtCalender_start.Text = "2022-01-01";
-                this.txtCalender_end.Text = "2022-12-31";
+
                 string keyword = this.Request.QueryString["keyword"];
                 if (!string.IsNullOrWhiteSpace(keyword))
                     this.titlesearch.Text = keyword;
@@ -137,7 +137,6 @@ namespace Questionary.Pages.Back
                     ? 1
                     : Convert.ToInt32(pageIndexText);
             this.txtCalender_start.Text = "2022-01-01";
-            this.txtCalender_end.Text = "2022-12-31";
             string keyword = this.Request.QueryString["keyword"];
             if (!string.IsNullOrWhiteSpace(keyword))
                 this.titlesearch.Text = keyword;

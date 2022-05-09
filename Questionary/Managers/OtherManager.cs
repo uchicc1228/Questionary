@@ -350,6 +350,8 @@ namespace Questionary.Managers
         //列表頁專用(有標題)
         public List<QuestionaryModel> GetMapList(string keyword, int pageSize, int pageIndex, out int totalRows, string QStartTime, string QEndTime)
         {
+            string date1 = "";
+            string date2 = "";
             List<QuestionaryModel> list = new List<QuestionaryModel>();
             int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
             if (skip < 0)
@@ -358,6 +360,18 @@ namespace Questionary.Managers
             string whereCondition = string.Empty;
             if (!string.IsNullOrWhiteSpace(keyword))
                 whereCondition = " AND QTitle LIKE '%'+@keyword+'%' ";
+
+            if (QEndTime != "")
+            {
+                date1 = "and [QEndTime] <=   @QEndTime and [QEndTime] != ''";
+            }
+
+
+            if (string.IsNullOrEmpty(QEndTime) == true)
+            {
+                date2 = "or [QEndTime] =''  and QDisplay = '1'";
+            }
+
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
@@ -368,17 +382,17 @@ namespace Questionary.Managers
                         (
                             SELECT TOP {skip} QID
                             FROM Questionary 
-                            WHERE  [QStartTime] >= @QStartTime and
-                                 [QEndTime] <=  @QEndTime and
-                                QDisplay = '1' 
-                                {whereCondition}
+                            WHERE  [QStartTime] >= @QStartTime {date1} 
+                             and QDisplay = '1' 
+                                {whereCondition} {date2}
                             ORDER BY QNumber DESC
                         )  
                             and [QStartTime] >= @QStartTime
-                            and [QEndTime] <=  @QEndTime
+                           {date1}
                             and QDisplay = '1' 
-                        {whereCondition}
+                        {whereCondition} {date2}
                     ORDER BY QNumber DESC ";
+
 
             string commandCountText =
                 $@" SELECT COUNT(QID) 

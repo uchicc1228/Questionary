@@ -113,10 +113,6 @@
                 <div class="list-group" id="summarizing">
                 </div>
             </div>
-            <%--<div id="PageTab">
-            </div>
-            <button id="0">0</button>--%>
-            <%--我改的這在--%>
             <div class="divlist">
                 <ul id="listContent">
                     <li></li>
@@ -258,9 +254,15 @@
                     method: "GET",
                     dataType: "JSON",
                     data: SearchData,
-                    success: function (data) {
+                    success: function (data) {                      
                         if (data.length == 0) {
-                            alert('無欲查詢資料，因此問卷列表無任何變更。');
+                            if (url == "../../API/GetQuestionary.ashx") {
+                                alert('查無資料，因此列出所有問卷。');
+
+                            }
+                            if (url == "../../API/GetAllQuestionary.ashx") {
+                                alert('目前無任何問卷。');
+                            }
 
                         }
                         else {
@@ -272,6 +274,7 @@
                             }
                             List.bindList(pageIndex, data.length, data);
                         }
+                        
                     },
                     error: function (msg) {
                         console.log(msg);
