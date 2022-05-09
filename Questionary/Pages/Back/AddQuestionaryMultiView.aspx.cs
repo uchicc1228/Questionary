@@ -693,7 +693,15 @@ namespace Questionary.Pages.Back
                 return;
             }
 
-        //http://localhost:14351/Pages/Back/BackIndexReWrite.aspx
+
+            if (this.txtanswer.Text.Substring(this.txtanswer.Text.Length - 1, 1) == ";")
+            {
+                this.txtanswer.Text = this.txtanswer.Text.Remove(this.txtanswer.Text.Length - 1, 1);
+            }
+
+
+
+            //http://localhost:14351/Pages/Back/BackIndexReWrite.aspx
 
 
             _modelQ.QID = _questionayGuid;
@@ -701,6 +709,10 @@ namespace Questionary.Pages.Back
             this.Session["Catrgory"] = _modelQ.QCatrgory;
             if (string.IsNullOrEmpty(this.txtQuestion.Text) != true)
             {
+            
+
+
+
                 _modelQ.Question = this.txtQuestion.Text;
                 this.Session["Question"] = _modelQ.Question;
             }

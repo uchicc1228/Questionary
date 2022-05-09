@@ -667,7 +667,6 @@ namespace Questionary.Managers
                         command.Parameters.AddWithValue("@QCatrgory", model.QCatrgory);
                         command.Parameters.AddWithValue("@QNumber", model.QNumber);
                         command.Parameters.AddWithValue("@ANumber", model.QNumber);
-
                         conn.Open();
                         command.ExecuteNonQuery();
                     }
