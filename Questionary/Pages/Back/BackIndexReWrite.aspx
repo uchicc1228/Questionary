@@ -153,7 +153,7 @@
                 var time_start = $("#txtCalender_start").val();
                 var time_end = $("#txtCalender_end").val();
                 console.log(time_start);
-                if (time_start > time_end) {
+                if (time_start > time_end && time_end != '') {
                     alert('哪有人開始日期比結束日期大的')
                     return false;
                 }          

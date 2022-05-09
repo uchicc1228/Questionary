@@ -174,28 +174,26 @@ namespace Questionary.Pages.Back
             if (string.IsNullOrEmpty(this.titlesearch.Text) == true && this.txtCalender_start.Text !=null )
             {
                 string url = this.Request.Url.LocalPath + "?Start=" + this.txtCalender_start.Text + "&"+"End=" + this.txtCalender_end.Text;
-                this.Response.Redirect(url);
+                
             }
 
 
             if (string.IsNullOrEmpty(this.titlesearch.Text) == false)
             {
                 string url = this.Request.Url.LocalPath + "?keyword=" + this.titlesearch.Text;
-                this.Response.Redirect(url);
+                
             }
-
-
 
             string pageIndexText = this.Request.QueryString["Index"];
             int pageIndex =
                 (string.IsNullOrWhiteSpace(pageIndexText))
                     ? 1
                     : Convert.ToInt32(pageIndexText);
-            string _keyword = this.Request.QueryString["keyword"];
+            string _keyword = this.titlesearch.Text;
             if (!string.IsNullOrWhiteSpace(_keyword))
                 this.titlesearch.Text = _keyword;
-            string timestart = this.Request.QueryString["Start"];
-            string timeend = this.Request.QueryString["End"];
+            string timestart = this.txtCalender_start.Text;
+            string timeend = this.txtCalender_end.Text;
             int _totalRows = 0;
             var _list = _mgrO.GetMapList(_keyword, _pageSize, pageIndex, out _totalRows, timestart, timeend);
             this.ucPager.TotalRows = _totalRows;

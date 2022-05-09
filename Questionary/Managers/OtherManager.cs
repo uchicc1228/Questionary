@@ -94,7 +94,7 @@ namespace Questionary.Managers
 	                   		 ( SELECT QNumber FROM Questionary
 	                   		    where [QStartTime] >= @QStartTime
                                 and [QEndTime] <=  @QEndTime )
-	                   									           ORDER BY QNumber DESC)	  		   
+	                   		 ORDER BY QNumber DESC)	  		   
                                                                                                   
 	                   	     and  [QStartTime] >= @QStartTime
                              and [QEndTime] <=    @QEndTime	
@@ -358,20 +358,27 @@ namespace Questionary.Managers
                 skip = 0;
 
             string whereCondition = string.Empty;
-            if (!string.IsNullOrWhiteSpace(keyword))
-                whereCondition = " AND QTitle LIKE '%'+@keyword+'%' ";
+  
 
             if (QEndTime != "")
             {
                 date1 = "and [QEndTime] <=   @QEndTime and [QEndTime] != ''";
             }
 
-
             if (string.IsNullOrEmpty(QEndTime) == true)
-            {
-                date2 = "or [QEndTime] =''  and QDisplay = '1'";
+            {                
+                date2 = "or [QEndTime] = ''  and QDisplay = '1'";
             }
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                whereCondition = " AND QTitle LIKE '%'+@keyword+'%' ";
+                if(QEndTime == "")
+                {
+                    date2 = date1;
+                }
+                
+            }
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
