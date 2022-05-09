@@ -689,7 +689,7 @@ namespace Questionary.Pages.Back
             bool isRequest = checkans.GroupBy( i  => i).Where(g => g.Count() >1 ).Count() >0;
             if(isRequest == true)
             {
-                Response.Write("<script>alert('有重複的答案')</script>");
+                Response.Write("<script>alert('有重複的答案，或是您未輸入任何答案')</script>");
                 return;
             }
 
