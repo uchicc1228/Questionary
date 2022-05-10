@@ -194,8 +194,15 @@ namespace Questionary.Managers
 
             if (string.IsNullOrEmpty(time_end) == true)
             {
-                whereCondition2 = "or [QEndTime] ='' and QDisplay = '1' ";
+                whereCondition2 = "or [QEndTime] ='' and QDisplay = '1' and [QStartTime] >= @QStartTime ";
             }
+
+            if(string.IsNullOrEmpty(title) == false)
+            {
+                whereCondition2 = whereCondition;
+            }
+
+
 
 
             string connStr = ConfigHelper.GetConnectionString();
@@ -277,8 +284,11 @@ namespace Questionary.Managers
 
             if(string.IsNullOrEmpty(time_end)== true)
             {
-                whereCondition2 = "or [QEndTime] =''";
+                whereCondition2 = "or [QEndTime] ='' and [QStartTime] >= @QStartTime  and QDisplay = 1 ";
             }
+
+
+
 
 
             string connStr = ConfigHelper.GetConnectionString();

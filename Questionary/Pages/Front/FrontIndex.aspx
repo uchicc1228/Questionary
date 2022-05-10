@@ -204,7 +204,7 @@
                     var time_start = $("#txtCalender_start").val();
                     var time_end = $("#txtCalender_end").val();
                     var ID = $("#hfID").val();
-                    if (time_start > time_end) {
+                    if (time_start > time_end && time_end !='') {
                         alert('請注意日期')
                         return false;
                     }
@@ -257,8 +257,8 @@
                     success: function (data) {                      
                         if (data.length == 0) {
                             if (url == "../../API/GetQuestionary.ashx") {
-                                alert('查無資料，因此列出所有問卷。');
-
+                                alert('查無資料。');
+                                
                             }
                             if (url == "../../API/GetAllQuestionary.ashx") {
                                 alert('目前無任何問卷。');
