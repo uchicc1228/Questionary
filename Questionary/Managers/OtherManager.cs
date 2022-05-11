@@ -74,6 +74,9 @@ namespace Questionary.Managers
             }
 
         }
+
+   
+
         //分頁
         public List<QuestionaryModel> Pafination(string time_start, string time_end, int pageSize, int pageIndex, out int totalRows)
         {
@@ -366,7 +369,7 @@ namespace Questionary.Managers
             }
 
             if (string.IsNullOrEmpty(QEndTime) == true)
-            {                
+            {
                 date2 = "or [QEndTime] = ''  and QDisplay = '1'";
             }
 
@@ -391,13 +394,13 @@ namespace Questionary.Managers
                             FROM Questionary 
                             WHERE  [QStartTime] >= @QStartTime {date1} 
                              and QDisplay = '1' 
-                                {whereCondition} {date2}
+                                {whereCondition} 
                             ORDER BY QNumber DESC
                         )  
                             and [QStartTime] >= @QStartTime
                            {date1}
                             and QDisplay = '1' 
-                        {whereCondition} {date2}
+                        {whereCondition} 
                     ORDER BY QNumber DESC ";
 
 
@@ -405,7 +408,7 @@ namespace Questionary.Managers
                 $@" SELECT COUNT(QID) 
                     FROM Questionary
                     WHERE  QDisplay = '1' and [QStartTime] >= @QStartTime
-                                and [QEndTime] <=  @QEndTime
+                   and [QEndTime] <=   @QEndTime  and  [QEndTime] != '' {date2}
                     {whereCondition}
                     ";
 
@@ -418,6 +421,7 @@ namespace Questionary.Managers
                         if (!string.IsNullOrWhiteSpace(keyword))
                         {
                             command.Parameters.AddWithValue("@keyword", keyword);
+
                         }
 
                         command.Parameters.AddWithValue("@QEndTime", QEndTime);

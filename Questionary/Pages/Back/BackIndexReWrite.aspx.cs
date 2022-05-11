@@ -17,6 +17,7 @@ namespace Questionary.Pages.Back
         protected void Page_Load(object sender, EventArgs e)
         {
 
+
             string pageIndexText = this.Request.QueryString["Index"];
             int pageIndex =
                 (string.IsNullOrWhiteSpace(pageIndexText))
@@ -26,15 +27,18 @@ namespace Questionary.Pages.Back
 
             if (!this.IsPostBack)
             {
-                this.Session.Clear();
+         
                 //timesearch
                 if (string.IsNullOrWhiteSpace(this.Request.QueryString["Start"]) == false && string.IsNullOrWhiteSpace(this.Request.QueryString["End"]) == false)
                 {
-                    string _keyword = this.Request.QueryString["keyword"];
+                    string _keyword = this.Session["word"] as string;
                     if (!string.IsNullOrWhiteSpace(_keyword))
                         this.titlesearch.Text = _keyword;
                     string timestart = this.Request.QueryString["Start"];
                     string timeend = this.Request.QueryString["End"];
+                    this.titlesearch.Text = _keyword;
+                    this.txtCalender_start.Text = this.Request.QueryString["Start"];
+                    this.txtCalender_end.Text = this.Request.QueryString["End"];
                     int _totalRows = 0;
                     var _list = _mgrO.GetMapList(_keyword, _pageSize, pageIndex, out _totalRows, timestart, timeend);
                     this.ucPager.TotalRows = _totalRows;
@@ -45,6 +49,7 @@ namespace Questionary.Pages.Back
                         this.plcEmpty.Visible = true;
                         this.rptList.Visible = false;
                         this.ucPager.Visible = false;
+                        this.Session.Clear();
                     }
                     else
                     {
@@ -53,22 +58,23 @@ namespace Questionary.Pages.Back
 
                         this.rptList.DataSource = _list;
                         this.rptList.DataBind();
+                        this.Session.Clear();
                     }
 
-                    this.txtCalender_start.Text = "2022-01-01";
 
                     return;
                 }
 
 
 
-                
-                this.txtCalender_start.Text = "2022-01-01";
 
-                string keyword = this.Request.QueryString["keyword"];
+
+
+                string keyword = this.Session["word"] as string;
                 if (!string.IsNullOrWhiteSpace(keyword))
                     this.titlesearch.Text = keyword;
                 int totalRows = 0;
+                keyword = this.titlesearch.Text;
                 var list = this._mgrO.GetMapList(keyword, _pageSize, pageIndex, out totalRows,this.txtCalender_start.Text,this.txtCalender_end.Text);
                 this.ucPager.TotalRows = totalRows;
                 this.ucPager.PageIndex = pageIndex;
@@ -79,6 +85,7 @@ namespace Questionary.Pages.Back
                     this.plcEmpty.Visible = true;
                     this.rptList.Visible = false;
                     this.ucPager.Visible = false;
+                    this.Session.Clear();
                 }
                 else
                 {
@@ -87,6 +94,7 @@ namespace Questionary.Pages.Back
 
                     this.rptList.DataSource = list;
                     this.rptList.DataBind();
+                    this.Session.Clear();
                 }
 
 
@@ -132,35 +140,28 @@ namespace Questionary.Pages.Back
                 }
             }
 
-            string pageIndexText = this.Request.QueryString["Index"];
-            int pageIndex =
-                (string.IsNullOrWhiteSpace(pageIndexText))
-                    ? 1
-                    : Convert.ToInt32(pageIndexText);
-            this.txtCalender_start.Text = "2022-01-01";
-            string keyword = this.Request.QueryString["keyword"];
-            if (!string.IsNullOrWhiteSpace(keyword))
-                this.titlesearch.Text = keyword;
-            int totalRows = 0;
-            var list = this._mgrO.GetMapList(keyword, _pageSize, pageIndex, out totalRows, this.txtCalender_start.Text, this.txtCalender_end.Text);
-            this.ucPager.TotalRows = totalRows;
-            this.ucPager.PageIndex = pageIndex;
-            this.ucPager.Bind("keyword", keyword);
-
-            if (list.Count == 0)
+            if (string.IsNullOrEmpty(this.titlesearch.Text) == false && this.txtCalender_start.Text != null && this.txtCalender_start.Text != null)
             {
-                this.plcEmpty.Visible = true;
-                this.rptList.Visible = false;
-                this.ucPager.Visible = false;
-            }
-            else
-            {
-                this.plcEmpty.Visible = false;
-                this.rptList.Visible = true;
+                string url = this.Request.Url.LocalPath + "?Start=" + this.txtCalender_start.Text + "&" + "End=" + this.txtCalender_end.Text + "&" + "?keyword=" + this.titlesearch.Text;
+                this.Session["word"] = this.titlesearch.Text;
+                this.Response.Redirect(url);
 
-                this.rptList.DataSource = list;
-                this.rptList.DataBind();
             }
+            if (string.IsNullOrEmpty(this.titlesearch.Text) == true && this.txtCalender_start.Text != null)
+            {
+                string url = this.Request.Url.LocalPath + "?Start=" + this.txtCalender_start.Text + "&" + "End=" + this.txtCalender_end.Text;
+                this.Response.Redirect(url);
+
+            }
+
+
+            if (string.IsNullOrEmpty(this.titlesearch.Text) == false)
+            {
+                string url = this.Request.Url.LocalPath + "?keyword=" + this.titlesearch.Text;
+                this.Response.Redirect(url);
+            }
+
+
 
         }
 
@@ -172,52 +173,27 @@ namespace Questionary.Pages.Back
 
         protected void btnsearch_Click(object sender, EventArgs e)
         {
+
+            if (string.IsNullOrEmpty(this.titlesearch.Text) == false && this.txtCalender_start.Text != null && this.txtCalender_start.Text != null)
+            {
+                string url = this.Request.Url.LocalPath + "?Start=" + this.txtCalender_start.Text + "&" + "End=" + this.txtCalender_end.Text + "&" + "?keyword=" + this.titlesearch.Text;
+                this.Session["word"] = this.titlesearch.Text;
+                this.Response.Redirect(url);
+
+            }
             if (string.IsNullOrEmpty(this.titlesearch.Text) == true && this.txtCalender_start.Text !=null )
             {
                 string url = this.Request.Url.LocalPath + "?Start=" + this.txtCalender_start.Text + "&"+"End=" + this.txtCalender_end.Text;
-                
+                this.Response.Redirect(url);
+
             }
 
 
             if (string.IsNullOrEmpty(this.titlesearch.Text) == false)
             {
                 string url = this.Request.Url.LocalPath + "?keyword=" + this.titlesearch.Text;
-                
+                this.Response.Redirect(url);
             }
-
-            string pageIndexText = this.Request.QueryString["Index"];
-            int pageIndex =
-                (string.IsNullOrWhiteSpace(pageIndexText))
-                    ? 1
-                    : Convert.ToInt32(pageIndexText);
-            string _keyword = this.titlesearch.Text;
-            if (!string.IsNullOrWhiteSpace(_keyword))
-                this.titlesearch.Text = _keyword;
-            string timestart = this.txtCalender_start.Text;
-            string timeend = this.txtCalender_end.Text;
-            int _totalRows = 0;
-            var _list = _mgrO.GetMapList(_keyword, _pageSize, pageIndex, out _totalRows, timestart, timeend);
-            this.ucPager.TotalRows = _totalRows;
-            this.ucPager.PageIndex = pageIndex;
-            this.ucPager.Bind("keyword", _keyword);
-            if (_list.Count == 0)
-            {
-                this.plcEmpty.Visible = true;
-                this.rptList.Visible = false;
-                this.ucPager.Visible = false;
-            }
-            else
-            {
-                this.plcEmpty.Visible = false;
-                this.rptList.Visible = true;
-
-                this.rptList.DataSource = _list;
-                this.rptList.DataBind();
-            }
-
-
-
-
 
 
         }
