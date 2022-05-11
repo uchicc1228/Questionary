@@ -355,6 +355,7 @@ namespace Questionary.Managers
         {
             string date1 = "";
             string date2 = "";
+            string date3 = "";
             List<QuestionaryModel> list = new List<QuestionaryModel>();
             int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
             if (skip < 0)
@@ -362,6 +363,7 @@ namespace Questionary.Managers
 
             string whereCondition = string.Empty;
   
+
 
             if (QEndTime != "")
             {
@@ -376,12 +378,19 @@ namespace Questionary.Managers
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 whereCondition = " AND QTitle LIKE '%'+@keyword+'%' ";
+
                 if(QEndTime == "")
                 {
                     date2 = date1;
                 }
                 
             }
+
+            if(QStartTime != string.Empty)
+            {
+                date3 = "and [QStartTime] <=   @QStartTime ";
+            }
+
 
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
@@ -407,8 +416,7 @@ namespace Questionary.Managers
             string commandCountText =
                 $@" SELECT COUNT(QID) 
                     FROM Questionary
-                    WHERE  QDisplay = '1' and [QStartTime] >= @QStartTime
-                   and [QEndTime] <=   @QEndTime  and  [QEndTime] != '' {date2}
+                    WHERE  QDisplay = '1' {date3} {date1}
                     {whereCondition}
                     ";
 

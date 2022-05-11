@@ -1,4 +1,4 @@
-﻿s<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BaseQuestion.aspx.cs" Inherits="Questionary.Pages.Back.BaseQuestion" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BaseQuestion.aspx.cs" Inherits="Questionary.Pages.Back.BaseQuestion" %>
 
 <!DOCTYPE html>
 

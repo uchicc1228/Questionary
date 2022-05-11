@@ -75,6 +75,8 @@ namespace Questionary.Pages.Back
                     this.titlesearch.Text = keyword;
                 int totalRows = 0;
                 keyword = this.titlesearch.Text;
+                this.txtCalender_start.Text = this.Request.QueryString["Start"];
+                this.txtCalender_end.Text = this.Request.QueryString["End"];
                 var list = this._mgrO.GetMapList(keyword, _pageSize, pageIndex, out totalRows,this.txtCalender_start.Text,this.txtCalender_end.Text);
                 this.ucPager.TotalRows = totalRows;
                 this.ucPager.PageIndex = pageIndex;
