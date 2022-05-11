@@ -495,6 +495,15 @@ namespace Questionary.Pages.Back
             if (this.Session["Edit"] as string == "y")
             {
 
+
+                if(DateTime.Parse(this.TextQuestionaryStartTime.Text) < DateTime.Now.AddDays(-1))
+                {
+                    Response.Write("<script>alert('開始日期不能比今天早')</script>");
+                    return;
+                }
+
+
+
                 QuestionaryModel _EditModel = new QuestionaryModel();
                 _EditModel.ID = Guid.Parse(Request.QueryString["ID"]);
                 _EditModel.Title = this.TextQuestionaryTitle.Text;
@@ -959,6 +968,9 @@ namespace Questionary.Pages.Back
             _modelQ.QQMode = this.Session["Mode"] as string;
             _modelQ.Number = (int)this.Session["Number"];
             //error
+
+            
+
 
 
             //修改問題方法
