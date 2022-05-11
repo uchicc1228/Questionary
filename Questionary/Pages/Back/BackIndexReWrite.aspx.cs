@@ -26,6 +26,7 @@ namespace Questionary.Pages.Back
 
             if (!this.IsPostBack)
             {
+                this.Session.Clear();
                 //timesearch
                 if (string.IsNullOrWhiteSpace(this.Request.QueryString["Start"]) == false && string.IsNullOrWhiteSpace(this.Request.QueryString["End"]) == false)
                 {

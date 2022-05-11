@@ -225,7 +225,7 @@
                                    
                                     </FooterTemplate>
                                 </asp:Repeater>
-
+                            <asp:Button runat="server" ID="btnsession" Text="session" Visible="false"  OnClick="btnsession_Click1" />
                                 <asp:Button runat="server" ID="btnDel" Text="批量刪除" OnClick="btnDel_Click" />
                             </div>
                         </div>

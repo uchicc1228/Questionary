@@ -684,5 +684,48 @@ namespace Questionary.Managers
         }
         #endregion
 
+        public QuestionModel GetBaseQuestion(string QQuestion)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                 @" SELECT *
+                    FROM BaseQuestion
+                    WHERE QQuestion = @QQuestion ";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QQuestion", QQuestion);
+
+                        conn.Open();
+
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            QuestionModel model = new QuestionModel()
+                            {
+                                Question = reader["QQuestion"] as  string,
+
+                            };
+                            return model;
+
+                        }
+
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw (ex);
+            }
+        }
+
+
+
+
     }
 }

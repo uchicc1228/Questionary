@@ -15,12 +15,14 @@ namespace Questionary.Pages.Back
         QuestionModel _modelQ = new QuestionModel();
         QuestionayManager _mgr = new QuestionayManager();
         QuestionManager _mgrQ = new QuestionManager();
+        OtherManager _mgrO = new OtherManager();
         static Guid _questionID;
         protected void Page_Load(object sender, EventArgs e)
         {
 
             if (!IsPostBack)
             {
+                this.Session.Clear();//
                 List<QuestionModel> list = _mgrQ.GetAllBaseQuestion();
                 this.ret1.DataSource = list;
                 this.ret1.DataBind();
@@ -32,16 +34,20 @@ namespace Questionary.Pages.Back
         //加入問題
         protected void btnconfirmQ_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(this.Session["Question"] as string) == true)
+            QuestionModel _temporary = _mgrO.GetBaseQuestion(this.txtQuestion.Text);
+            if (_temporary != null)
             {
-                Response.Write("<script>alert('若要加入問題請按加入問題,此按鈕為編輯問題後的完成鍵')</script>");
+                Response.Write("<script>alert('已有相同名稱題目')</script>");
                 return;
             }
 
+           
 
             _modelQ.QuestionID = Guid.NewGuid();
             _modelQ.Question = this.txtQuestion.Text;
             _modelQ.Answer = this.txtanswer.Text;
+
+        
 
 
             List<string> checkans = this.txtanswer.Text.Split(';').ToList();
@@ -133,6 +139,7 @@ namespace Questionary.Pages.Back
                 List<QuestionModel> list = _mgrQ.GetAllBaseQuestion();
                 this.ret1.DataSource = list;
                 this.ret1.DataBind();
+                this.Session.Clear();
             }
             else
             {
@@ -150,6 +157,16 @@ namespace Questionary.Pages.Back
         }
         protected void btnFinalConfirm_Click(object sender, EventArgs e)
         {
+
+            if(this.Session["PageMode"] as string  != "編輯")
+            {
+                Response.Write("<script>alert('此按鈕為編輯問題後的完成鍵，請確認您是否在問題編輯狀態。')</script>");
+                return ;
+            }
+
+
+
+
            if(this.checknecessary.Checked == true)
             {
                 this.Session["Necessary"] = "必填";
@@ -180,8 +197,8 @@ namespace Questionary.Pages.Back
             if (_mgrQ.UpdateBaseQuestion(_modelQ) == true)
             {
                 Response.Write("<script>alert('編輯成功')</script>");
-                
 
+                this.Session.Clear();
             }
 
             List<QuestionModel> list = _mgrQ.GetAllBaseQuestion();
@@ -194,6 +211,10 @@ namespace Questionary.Pages.Back
         }
         protected void btnFinalCancek_Click(object sender, EventArgs e)
         {
+            this.Session.Clear();
+            this.txtanswer.Text = "";
+            this.txtQuestion.Text = "";
+            this.checknecessary.Checked = false;
 
         }
         protected void ret1_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -203,7 +224,8 @@ namespace Questionary.Pages.Back
                 case "btnEdit":
                     QuestionModel modelEdit = new QuestionModel();
                      _questionID = Guid.Parse(e.CommandArgument.ToString());
-                   
+
+                    this.Session["PageMode"] = "編輯";
 
 
                     modelEdit = _mgrQ.GetOneBaseQuestionInfo(_questionID);               
@@ -249,6 +271,10 @@ namespace Questionary.Pages.Back
 
                     break;
 
+
+
+
+
                 case "btnDelete":
                     QuestionModel modelDelete = new QuestionModel();
                     string arrDelete = e.CommandArgument.ToString();
@@ -256,7 +282,11 @@ namespace Questionary.Pages.Back
 
                     if (_mgrQ.DeleteBaseQuestion(_tempDeleteID) == true)
                     {
+                        this.Session.Clear();
                         Response.Write("<script>alert('刪除成功')</script>");
+                        this.txtanswer.Text = "";
+                        this.txtQuestion.Text = "";
+                        this.checknecessary.Checked = false;
 
                     };
                     List<QuestionModel> list = _mgrQ.GetAllBaseQuestion();
@@ -302,6 +332,14 @@ namespace Questionary.Pages.Back
         protected void txtQuestion_TextChanged(object sender, EventArgs e)
         {
             this.Session["Question"] = this.txtQuestion.Text;
+        }
+
+        protected void btnsession_Click(object sender, EventArgs e)
+        {
+            foreach (var crntSession in Session)
+            {
+                Response.Write(string.Concat(crntSession, "=", Session[crntSession.ToString()]) + "<br />");
+            }
         }
     }
 }

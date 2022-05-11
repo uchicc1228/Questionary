@@ -326,8 +326,9 @@ namespace Questionary.Pages.Back
                 this.ucPager.Visible = true;
                 this.plcall.Visible = true;
                 this.plcone.Visible = false;
-
+                this.getout.Enabled = true;
                 this.MultiQuestionary.ActiveViewIndex = 2;
+                
                 string pageIndexText = this.Request.QueryString["Index"];
                 int pageIndex =
                     (string.IsNullOrWhiteSpace(pageIndexText))
@@ -693,11 +694,14 @@ namespace Questionary.Pages.Back
                 return;
             }
 
-
-            if (this.txtanswer.Text.Substring(this.txtanswer.Text.Length - 1, 1) == ";")
+            if(string.IsNullOrEmpty(this.txtanswer.Text) == false)
             {
-                this.txtanswer.Text = this.txtanswer.Text.Remove(this.txtanswer.Text.Length - 1, 1);
+                if (this.txtanswer.Text.Substring(this.txtanswer.Text.Length - 1, 1) == ";" )
+                {
+                    this.txtanswer.Text = this.txtanswer.Text.Remove(this.txtanswer.Text.Length - 1, 1);
+                }
             }
+           
 
 
 
@@ -804,6 +808,7 @@ namespace Questionary.Pages.Back
             {
                 case "btnEdit":
 
+                    this.Session["EditorNot"] = "Edit";
                     num = _mgrU.GetAllWriter(_questionayGuid);
 
                     if (this.Session["PageMode"] as string == "編輯" && num.Count > 0)
@@ -875,6 +880,7 @@ namespace Questionary.Pages.Back
                     break;
 
                 case "btnDelete":
+                   
                     QuestionModel model3 = new QuestionModel();
                     string[] arr1 = e.CommandArgument.ToString().Split(',');
                     Guid id1;
@@ -894,7 +900,7 @@ namespace Questionary.Pages.Back
                     if (_mgrQ.DeleteQuestion(model3) == true)
                     {
                         Response.Write("<script>alert('刪除成功')</script>");
-
+                        this.Session.Clear();
                     };
                     List<QuestionModel> list = _mgrQ.GetAllQuestion(model3.QID);
                     this.ret1.DataSource = list;
@@ -926,12 +932,24 @@ namespace Questionary.Pages.Back
         // 編輯後的送出資料 此按鈕會更改DB內資訊
         protected void btnFinalConfirm_Click(object sender, EventArgs e)
         {
+            
+
+
 
             if (string.IsNullOrEmpty(this.Session["Question"] as string) == true)
             {
                 Response.Write("<script>alert('若要加入問題請按加入問題,此按鈕為編輯問題後的完成鍵')</script>");
                 return;
             }
+
+            if (this.Session["EditorNot"] as string != "Edit")
+            {
+                Response.Write("<script>alert('請確定自己在編輯問題狀態。')</script>");
+                return;
+            }
+
+
+
             this.MultiQuestionary.ActiveViewIndex = 1;
             _modelQ.QID = _questionayGuid;
             _modelQ.Question = this.Session["Question"] as string;
@@ -1391,5 +1409,14 @@ namespace Questionary.Pages.Back
             this.ret1.DataBind();
         }
 
+        protected void btnsession_Click1(object sender, EventArgs e)
+        {
+            
+                foreach (var crntSession in Session)
+                {
+                    Response.Write(string.Concat(crntSession, "=", Session[crntSession.ToString()]) + "<br />");
+                }
+            
+        }
     }
 }

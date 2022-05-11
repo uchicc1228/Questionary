@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BaseQuestion.aspx.cs" Inherits="Questionary.Pages.Back.BaseQuestion" %>
+﻿s<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BaseQuestion.aspx.cs" Inherits="Questionary.Pages.Back.BaseQuestion" %>
 
 <!DOCTYPE html>
 
@@ -105,8 +105,8 @@
                 </FooterTemplate>
             </asp:Repeater>
 
-
-        </div>
+            <asp:Button runat="server" ID="btnsession" Text="session"  visible="false"  OnClick="btnsession_Click" />
+         </div>
     </form>
 </body>
 </html>
