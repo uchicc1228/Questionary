@@ -406,7 +406,8 @@ namespace Questionary.Pages.Back
                         {
                             necessary = "(必填)";
                         }
-                        this.plcQuestion.Controls.Add(new Literal { ID = $"rdoltl{_qrdoi}", Text = $"<br/>{item.ANumber}.{item.Question}{necessary} <br/>" });
+                        this.plcQuestion.Controls.Add(new Literal { ID = $"rdoltl{_qrdoi}", Text = $"<br/>{QNumber}.{item.Question}{necessary} <br/>" });
+                        QNumber++;
                         for (int L = 0; L < list.xvalue.Count; L++)
                         {
                             if (w[L] == item.Question)
@@ -437,7 +438,8 @@ namespace Questionary.Pages.Back
                         {
                             necessary = "(必填)";
                         }
-                        this.plcQuestion.Controls.Add(new Literal { ID = $"chkltl{_qchki}", Text = $" <br/>{item.ANumber}.{item.Question}{necessary}<br/>" });
+                        this.plcQuestion.Controls.Add(new Literal { ID = $"chkltl{_qchki}", Text = $" <br/>{QNumber}.{item.Question}{necessary}<br/>" });
+                        QNumber++;
                         for (int L = 0; L < list.xvalue.Count; L++)
                         {
                             if (w[L] == item.Question)
@@ -469,7 +471,8 @@ namespace Questionary.Pages.Back
                             necessary = "(必填)";
                         }
 
-                        this.plcQuestion.Controls.Add(new Literal { ID = $"txtltl{_qtxti}", Text = $"<br/>{item.ANumber}.{item.Question}{necessary}<br/>" });
+                        this.plcQuestion.Controls.Add(new Literal { ID = $"txtltl{_qtxti}", Text = $"<br/>{QNumber}.{item.Question}{necessary}<br/>" });
+                        QNumber++;
 
                         _qtxti++;
 

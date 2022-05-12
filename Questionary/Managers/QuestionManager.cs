@@ -103,7 +103,7 @@ namespace Questionary.Managers
                 @"  SELECT *
                     FROM Question
                     WHERE QID  =  @QID and QDisplay = 1
-                    ORDER BY [QNumber] DESC;";
+                    ORDER BY [QNumber] ;";
             try
             {
                 using (SqlConnection conn = new SqlConnection(connStr))
