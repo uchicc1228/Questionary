@@ -133,6 +133,14 @@ namespace Questionary.Pages.Back
                     this.TextQuestionaryContent.Text = _tmpQuestionaryModel.Content;
                     this.TextQuestionaryStartTime.Text = _tmpQuestionaryModel.StartTime.ToString("yyyy-MM-dd");
                     this.TextQuestionaryEndTime.Text = _tmpQuestionaryModel.EndTime_string;
+                    if(_tmpQuestionaryModel.Status == "啟用")
+                    {
+                        this.ChkisEnable.Checked = true;
+                    }
+                    else
+                    {
+                        this.ChkisEnable.Checked = false;
+                    }
                     QNumber = _tmpQuestionaryModel.Number;
                     if (Request.QueryString["Index"] != null)
                     {
@@ -1410,6 +1418,8 @@ namespace Questionary.Pages.Back
             for (int i = 0; i < ret1.Items.Count; i++)
             {
                 checkbox = (CheckBox)ret1.Items[i].FindControl("CheckBox3");//取對象
+
+
                 id = (HiddenField)ret1.Items[i].FindControl("HiddenField1");//取對象
                 if (checkbox.Checked == true)                   //是否被選中
                 {
