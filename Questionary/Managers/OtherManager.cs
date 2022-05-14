@@ -75,7 +75,7 @@ namespace Questionary.Managers
 
         }
 
-   
+
 
         //分頁
         public List<QuestionaryModel> Pafination(string time_start, string time_end, int pageSize, int pageIndex, out int totalRows)
@@ -259,7 +259,7 @@ namespace Questionary.Managers
                         {
                             UserInfoModel model = new UserInfoModel()
                             {
-                                QID = (Guid)reader["QuestionaryID"],                    
+                                QID = (Guid)reader["QuestionaryID"],
                                 UserName = reader["UserName"] as string,
                                 UserWriteTime = (DateTime)reader["CreatTime"],
                                 UserID = (Guid)reader["UserID"],
@@ -362,7 +362,7 @@ namespace Questionary.Managers
                 skip = 0;
 
             string whereCondition = string.Empty;
-  
+
 
 
             if (QEndTime != "")
@@ -379,14 +379,14 @@ namespace Questionary.Managers
             {
                 whereCondition = " AND QTitle LIKE '%'+@keyword+'%' ";
 
-                if(QEndTime == "")
+                if (QEndTime == "")
                 {
                     date2 = date1;
                 }
-                
+
             }
 
-            if(QStartTime != string.Empty)
+            if (QStartTime != string.Empty)
             {
                 date3 = "and [QStartTime] <=   @QStartTime ";
             }
@@ -582,6 +582,72 @@ namespace Questionary.Managers
         #endregion"分頁"
 
         #region "前台確認寫入資料"
+
+        public bool getpersonUser(UserInfoModel model)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText = @" 
+                      SELECT * From Person
+                      WHERE(UserID = @UserID, QuestionaryID = @QID)";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+                        command.Parameters.AddWithValue("@QID", model.QID);
+                        command.Parameters.AddWithValue("@UserID", model.UserID);
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+                throw (ex);
+            }
+        }
+
+        public bool confirmUser(UserInfoModel model)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText = @" 
+                    INSERT INTO Person
+                        (QuestionaryID, UserID,UserName)
+                    VALUES
+                        (@QID,@UserID,@UserName);";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+                        command.Parameters.AddWithValue("@QID", model.QID);
+                        command.Parameters.AddWithValue("@UserID", model.UserID);
+                        command.Parameters.AddWithValue("@UserName", model.UserName);
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+                throw (ex);
+            }
+
+        }
         public bool ConfirmAnswer(UserInfoModel model)
         {
 
@@ -592,13 +658,7 @@ namespace Questionary.Managers
                         (QID, QuestionID, UserID,  UserName ,UserPhone, UserEmail, UserAge , UserTextAnswer,Number)
                     VALUES
                         (@QID, @QuestionID, @UserID,  @UserName, @UserPhone , @UserEmail, @UserAge , @UserTextAnswer,@Number);"
-                                            +
 
-                @" 
-                    INSERT INTO Person
-                        (QuestionaryID, UserID,UserName)
-                    VALUES
-                        (@QID,@UserID,@UserName);"
 
                                             +
 
@@ -656,7 +716,7 @@ namespace Questionary.Managers
                 @" Select *  
                    FROM  Answers 
                    WHERE QID = @QID 
-                  ORDER BY Question ";
+                   ORDER BY Question ";
 
             try
             {
@@ -718,7 +778,7 @@ namespace Questionary.Managers
                         {
                             QuestionModel model = new QuestionModel()
                             {
-                                Question = reader["QQuestion"] as  string,
+                                Question = reader["QQuestion"] as string,
 
                             };
                             return model;

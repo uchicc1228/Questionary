@@ -378,7 +378,7 @@ namespace Questionary.Managers
             string connStr = ConfigHelper.GetConnectionString();
             string commandText =
                @"   SELECT *
-                    FROM UserManager
+                    FROM Answers
                     WHERE QuestionID = @QuestionID;";
             try
             {

@@ -11,9 +11,12 @@ namespace Questionary.Pages.Front
 {
     public partial class FrontQuestionConfirm : System.Web.UI.Page
     {
+
+        static List<ans> _anslist = new List<ans>();
         string[] rdoansarray;
         string[] chkansarray;
         private static List<string> _tmplistchk = new List<string>();
+        private static List<string> _tmpchkans = new List<string>();
         private static List<string> _tmplistrdo = new List<string>();
         OtherManager _mgrO = new OtherManager();
         QuestionaryModel model = new QuestionaryModel();
@@ -27,9 +30,9 @@ namespace Questionary.Pages.Front
         private static List<UserInfoModel> _useranswer;
         private static Guid _QID;
         #region "動態生成控制項所需變數"
-         int rdoi;
-         int chki;
-         int txti;
+        int rdoi;
+        int chki;
+        int txti;
         static string rdoans;
         static string chkans;
         static string txtans;
@@ -39,10 +42,10 @@ namespace Questionary.Pages.Front
 
             if (!IsPostBack)
             {
-         
+
                 _QID = Guid.Parse(Request.QueryString["ID"]);
                 _userinfo = HttpContext.Current.Session["userInfo"] as UserInfoModel;
-                if(_userinfo == null)
+                if (_userinfo == null)
                 {
                     Response.Redirect("FrontIndex.aspx");
                     return;
@@ -102,27 +105,61 @@ namespace Questionary.Pages.Front
                 }
 
                 //顯示所選題目
+                List<Guid> _tmpGuidlist = new List<Guid>();
 
                 foreach (var item in chk)
                 {
-                    string id = item.UserAnswer.Remove(0, 1);
-                    string _tmpchksans = "";
-                    CheckBox aaa = this.form1.FindControl(id) as CheckBox;
-                    aaa.Checked = true;
-                    aaa.Enabled = false;
-                    aaa.Visible = true;
-                    _tmpchksans += aaa.Text;
-                    string ans = "";
-                    ans = _tmpchksans.Replace("<br/>", "");
-                    chkans += ans + " ";
+                    List<UserInfoModel> _chk = chk.FindAll(x => x.QuestionID == item.QuestionID);
+                    if (!_tmpGuidlist.Contains(item.QuestionID))
+                    {
+                        _tmpGuidlist.Add(item.QuestionID);
+                        foreach (var _item in _chk)
+                        {
+                            string id = _item.UserAnswer.Remove(0, 1);
+                            string _tmpchksans = "";
+                            CheckBox aaa = this.form1.FindControl(id) as CheckBox;
+                            aaa.Checked = true;
+                            aaa.Enabled = false;
+                            aaa.Visible = true;
+                            _tmpchksans += aaa.Text;
+                            string ans = "";
+                            ans = _tmpchksans.Replace("<br/>", "");
+                            chkans += ans + ";";
 
+                            ans = _tmpchksans.Replace("<br/>", "");
+                            string _wee = _item.UserQuestion + "=" + _item.UserAnswer;
+                            _tmplistchk.Add(_wee);
+                        }
+                        ans _ans = new ans();
+                        _ans.answer = chkans;
+                        _ans.question = item.UserQuestion;
+                        _ans.UserID = item.UserID;
+                        _anslist.Add(_ans);
+                        chkans = "";
+                    }
 
-
-                    ans = _tmpchksans.Replace("<br/>", "");
-                    string _wee = item.UserQuestion + "=" + item.UserAnswer;
-                    _tmplistchk.Add(_wee);
 
                 }
+                //foreach (var item in chk)
+                //{
+                //    string id = item.UserAnswer.Remove(0, 1);
+                //    string _tmpchksans = "";
+                //    CheckBox aaa = this.form1.FindControl(id) as CheckBox;
+                //    aaa.Checked = true;
+                //    aaa.Enabled = false;
+                //    aaa.Visible = true;
+                //    _tmpchksans += aaa.Text;
+                //    string ans = "";
+                //    ans = _tmpchksans.Replace("<br/>", "");
+                //    chkans += ans + " ";
+
+
+
+                //    ans = _tmpchksans.Replace("<br/>", "");
+                //    string _wee = item.UserQuestion + "=" + item.UserAnswer;
+                //    _tmplistchk.Add(_wee);
+
+                //}
 
                 foreach (var item in rdo)
                 {
@@ -167,11 +204,19 @@ namespace Questionary.Pages.Front
         {
             string _tmptext = "";
             string qq = "";
+            List<ans> anslist = new List<ans>();
+            ans ans = new ans();
             // 題目 //所選答案
             //useranser = "1chk1"
             foreach (var item in _useranswer)
             {
-               
+
+
+
+
+
+
+                List<ans> thisUserAns = _anslist.FindAll(x => x.UserID == item.UserID);
                 anss.QID = _QID;
                 anss.UserID = item.UserID;
                 anss.QuestionID = item.QuestionID;
@@ -182,6 +227,13 @@ namespace Questionary.Pages.Front
                 anss.UserAge = _userinfo.UserAge;
                 anss.UserPhone = _userinfo.UserPhone;
                 anss.UserWriteTime = DateTime.Now;
+
+                //寫入使用者資料 先判斷使否已經有了
+                if (_mgrO.getpersonUser(anss) == false)
+                {
+                    _mgrO.confirmUser(anss);
+
+                }
                 //先找checkbox的question是否加入過 若加入過 continue;
                 UserInfoModel momo = _mgrQ.findquestionID(anss.QuestionID);
                 //找到該問題的所有選項
@@ -193,11 +245,7 @@ namespace Questionary.Pages.Front
                 if (string.IsNullOrEmpty(rdoans) != true)
                 {
                     rdoansarray = rdoans.Split(' ');// 內容: 台北 回答三
-                   
-                }
-                if (string.IsNullOrEmpty(chkans) != true)
-                {
-                    chkansarray = chkans.Split(' ');
+
                 }
 
                 List<string> tmplist = qanswer.ToList();
@@ -210,7 +258,7 @@ namespace Questionary.Pages.Front
                             continue;
                         }
                     }
-                    if(rdoansarray != null)
+                    if (rdoansarray != null)
                     {
                         for (int i = 0; i < rdoansarray.Length - 1; i++)
                         {
@@ -225,7 +273,7 @@ namespace Questionary.Pages.Front
 
                         }
                     }
-                   
+
                 }
                 if (item.UserAnswer.Contains("chk"))
                 {
@@ -237,25 +285,53 @@ namespace Questionary.Pages.Front
                         }
                     }
 
-                    if(chkansarray != null)
+                    foreach (var item3 in thisUserAns)
                     {
-                        for (int i = 0; i < chkansarray.Length - 1; i++)
+                        if (item3.question == item.UserQuestion)
                         {
-                            qq = tmplist.Find(x => x.Contains(chkansarray[i]));
-                            if (qq != null && !_tmptext.Contains(qq))
-                            {
-                                _tmptext += qq + ";";
-                            }
+
+
+                            anss.UserTextAnswer = item3.answer;
+                            anss.Number = answer.QNumber;
+                            _mgrO.ConfirmAnswer(anss);
 
                         }
-                    }   
-                    anss.UserTextAnswer = _tmptext;
-                    anss.Number = answer.QNumber;
-                    _mgrO.ConfirmAnswer(anss);
-                    qq = "";
-                    _tmptext = "";
+                    }
+
+
+
+
 
                 }
+                //if (item.UserAnswer.Contains("chk"))
+                //{
+                //    if (momo != null)
+                //    {
+                //        if (momo.QuestionID == item.QuestionID && momo.UserID == item.UserID)
+                //        {
+                //            continue;
+                //        }
+                //    }
+
+                //    if(chkansarray != null)
+                //    {
+                //        for (int i = 0; i < chkansarray.Length - 1; i++)
+                //        {
+                //            qq = tmplist.Find(x => x.Contains(chkansarray[i]));
+                //            if (qq != null && !_tmptext.Contains(qq))
+                //            {
+                //                _tmptext += qq + ";";
+                //            }
+
+                //        }
+                //    }   
+                //    anss.UserTextAnswer = _tmptext;
+                //    anss.Number = answer.QNumber;
+                //    _mgrO.ConfirmAnswer(anss);
+                //    qq = "";
+                //    _tmptext = "";
+
+                //}
                 if (item.UserAnswer.Contains("txt"))
                 {
 
@@ -313,6 +389,17 @@ namespace Questionary.Pages.Front
         {
 
             Response.Redirect("FrontQuestionaryQ.aspx?ID=" + _QID);
+
+        }
+
+
+
+        private class ans
+        {
+            public string question { get; set; }
+            public string answer { get; set; }
+
+            public Guid UserID { get; set; }
 
         }
     }

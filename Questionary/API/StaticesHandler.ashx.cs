@@ -19,35 +19,30 @@ namespace Questionary.API
         QuestionManager _mgrQ = new QuestionManager();
 
         List<QuestionModel> questionary = new List<QuestionModel>();
-        List<string> listx = new List<string>(); //1.選項 = 此問題的全部選項名稱
-        List<string> listw = new List<string>(); //1.選項 = 此問題的全部選項名稱
-        List<string> listy = new List<string>(); //2.數值 = 分子 =幾個使用者選擇該選項
-        List<string> listv = new List<string>();
-        List<Guid> listz = new List<Guid>(); //3.題目名稱 = 此問題名稱
+        List<string> listx = new List<string>(); //此問題的全部選項名稱
+        List<string> listw = new List<string>(); //題目名稱
+        List<string> listy = new List<string>(); //數值 = 分子 = 幾個使用者選擇該選項
+        List<string> listv = new List<string>();//該題目所有回答加起來的總數
+        List<Guid> listz = new List<Guid>(); //題目id
         public void ProcessRequest(HttpContext context)
         {
             Guid questionaryid = Guid.Parse(context.Request.QueryString["QID"]);
             //該問卷內所有題目
             questionary = _mgrQ.GetAllQuestion(questionaryid);
             questionary = questionary.FindAll(x => x.QQMode != "文字");
-
-
             //抓Table = Answer內所有的問題
             List<StatciModel> statci = _mgrO.FindStaticInfo(questionaryid);
             List<StatciModel> _statci = new List<StatciModel>();
-        
-            
             foreach (var item2 in statci)
             {
                 for (var i = 0; i < questionary.Count; i++)
                 {
                     if (item2.Question == questionary[i].Question)
                     {
-                      _statci.Add(item2);
+                        _statci.Add(item2);
                     }
                 }
             }
-
             int[] T = new int[0] { };
             foreach (var item in _statci)
             {
@@ -77,7 +72,7 @@ namespace Questionary.API
 
                         string[] _tmpanswer = item.Answer.Split(';').ToArray();
                         List<string> _tmpanswerlist = _tmpanswer.Where(z => z != "").ToList();//使用者所選選項                                 
-                        List<StatciModel> _thisAnsQ = _statci.FindAll(z => z.Answer.Contains(item.Answer));
+                        List<StatciModel> _thisAnsQ = _statci.FindAll(z => z.Question.Contains(item.Question));
                         foreach (var item3 in _thisAnsQ)
                         {
                             List<string> pp2 = item3.UserTextAnswer.Split(';').ToList();
@@ -121,7 +116,6 @@ namespace Questionary.API
             string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(list);
             context.Response.ContentType = "application/json";
             context.Response.Write(jsonText);
-
         }
 
         public bool IsReusable
