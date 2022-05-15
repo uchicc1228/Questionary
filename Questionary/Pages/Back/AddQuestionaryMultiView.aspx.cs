@@ -383,14 +383,17 @@ namespace Questionary.Pages.Back
                 this.MultiQuestionary.ActiveViewIndex = 0;
                 return;
             }
+
+
+
             List<QuestionModel> _tmpQModel = new List<QuestionModel>();
             _tmpQModel = _mgrQ.GetAllQuestionNoDesc(_questionayGuid);
             mylist mylistmodel = couculate(_questionayGuid);
-            List<string> x = list.xvalue;//該題目選項
-            List<string> y = list.yvalue;//該題目各選項分別的值
-            List<string> v = list.vvalue;//該題目各選選項總數
-            List<string> w = list.wvalue;//題目
-            List<Guid> z = list.zvalue;
+            List<string> x = mylistmodel.xvalue;//該題目選項
+            List<string> y = mylistmodel.yvalue;//該題目各選項分別的值
+            List<string> v = mylistmodel.vvalue;//該題目各選選項總數
+            List<string> w = mylistmodel.wvalue;//題目
+            List<Guid> z = mylistmodel.zvalue;
             if (_tmpQModel.Count == 0)
             {
                 Response.Write("<script>alert('尚無資料')</script>");
@@ -1336,7 +1339,12 @@ namespace Questionary.Pages.Back
                 //2.數值 = 分子 =幾個使用者選擇該選項
                 //3.題目名稱 = 此問題名稱                    
                 Guid c = item.QuestionID;
-                if (!listz.Contains(c))
+
+                QuestionModel model = new QuestionModel();
+                model = _mgrQ.GetQuestionAns(c);
+
+
+                if (!listz.Contains(c) && model.QQMode != "文字")
                 {
                     listx.Add(item.Answer);
                     listw.Add(item.Question);
@@ -1353,7 +1361,7 @@ namespace Questionary.Pages.Back
 
                         string[] _tmpanswer = item.Answer.Split(';').ToArray();
                         List<string> _tmpanswerlist = _tmpanswer.Where(z => z != "").ToList();//使用者所選選項                                 
-                        List<StatciModel> _thisAnsQ = _statci.FindAll(z => z.Answer.Contains(item.Answer));
+                        List<StatciModel> _thisAnsQ = _statci.FindAll(z => z.Question.Contains(item.Question));
                         foreach (var item3 in _thisAnsQ)
                         {
                             List<string> pp2 = item3.UserTextAnswer.Split(';').ToList();
@@ -1394,7 +1402,6 @@ namespace Questionary.Pages.Back
             list.wvalue = listw;
             list.xvalue = bbb;
             list.yvalue = qqq;
-            list.zvalue = listz;
 
             return list;
         }
